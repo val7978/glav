@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    <h1>Регистрация</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="id_email">E-mail</label>
+            <input type="email" id="id_email" name="email" placeholder="Введите E-mail" required>
+        </div>
+
+        <div class="input-group">
+            <label for="id_username">Логин</label>
+            <input type="text" id="id_username" name="username" placeholder="Введите логин (имя пользователя)" required>
+        </div>
+
+        <div class="input-group">
+            <label for="id_password1">Пароль</label>
+            <input type="password" id="id_password1" name="password1" placeholder="Введите пароль" required>
+        </div>
+
+        <div class="input-group">
+            <label for="id_password2">Подтверждение пароля</label>
+            <input type="password" id="id_password2" name="password2" placeholder="Подтвердите пароль" required>
+        </div>
+
+        <button type="submit" class="login-button">Зарегистрироваться</button>
+    </form>
+
+    <div class="register-link">
+        <a href="{% url 'login' %}">Уже есть аккаунт? Войти</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация работы{% endblock %}
+
+{% block content %}
+    <h1>Регистрация работы</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="id_name">Имя автора / псевдоним</label>
+            <input type="text" id="id_name" name="name" placeholder="Введите имя автора" required>
+        </div>
+
+        <div class="input-group">
+            <label for="id_email">E-mail</label>
+            <input type="email" id="id_email" name="email" placeholder="Введите E-mail" required>
+        </div>
+
+        <div class="input-group">
+            <label for="id_phone">Телефон</label>
+            <input type="tel" id="id_phone" name="phone" placeholder="Введите номер телефона" required>
+        </div>
+
+        <div class="input-group">
+            <label for="id_portfolio">Портфолио</label>
+            <input type="url" id="id_portfolio" name="portfolio" placeholder="Вставьте ссылку на свое портфолио">
+        </div>
+
+        <div class="input-group">
+            <label for="id_file">Файл работы</label>
+            <input type="file" id="id_file" name="file" required>
+        </div>
+
+        <button type="submit" class="login-button">Отправить</button>
+    </form>
+{% endblock %}

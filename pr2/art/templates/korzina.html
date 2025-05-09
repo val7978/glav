@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style4.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="title-block">
+    <p class="title">Корзина</p>
+</div>    
+
+<div class="favorites-container" id="cartContainer">
+    {% if cart_items %}
+    <form method="post">
+        {% csrf_token %}
+        {% for item in cart_items %}
+        <div class="art-card">
+            <img src="{{ item.artwork.image.url }}" alt="{{ item.artwork.title }}">
+            <div class="card-footer">
+                <span class="title">{{ item.artwork.title }}</span>
+                <span class="price">{{ item.artwork.price }} ₽</span>
+            </div>
+            <div class="extra-buttons">
+                <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" style="width: 50px;">
+                <button type="button" onclick="location.href='/remove-from-cart/{{ item.id }}/'" class="icon-button">Удалить</button>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div style="width: 100%; text-align: right; margin-top: 20px; font-size: 20px;">
+            Итого: {{ total_price }} ₽
+        </div>
+        
+        <div style="display: flex; justify-content: flex-end; gap: 20px; margin-top: 20px;">
+            <button type="submit" name="update" class="catalog-button">Обновить корзину</button>
+            <button type="submit" name="checkout" class="catalog-button" style="background-color: #4CAF50; color: white;">Оформить заказ</button>
+        </div>
+    </form>
+    {% else %}
+    <p style="text-align: center; width: 100%;">Корзина пуста</p>
+    {% endif %}
+</div>
+{% endblock %}

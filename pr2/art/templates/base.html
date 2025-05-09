@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Галерея искусств{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/general-style.css' %}">
+    {% if request.path == '/dashboard/' %}
+            <link rel="stylesheet" href="{% static 'css/style4.css' %}">
+    {% endif %}
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="header">
+        <div class="logo-block">
+            <img src="{% static 'img/лого.png' %}" class="logo">
+        </div>
+<body>
+    <div class="header">
+        <div class="logo-block">
+            <img src="{% static 'img/лого.png' %}" class="logo">
+        </div>
+
+        <div class="icons">
+            <a href="{% url 'general' %}"><img src="{% static 'img/home.png' %}" alt="Главная страница"></a>
+        </div>
+
+        <div class="search-of-parametrs">
+            <span>поиск по параметрам</span>
+            <img src="{% static 'img/параметры.png' %}" class="parametr-icon">
+        </div>
+        
+        <div class="search-of-parametrs-search">
+            <input type="text" placeholder="поиск" class="search-input">
+            <img src="{% static 'img/поиск.png' %}" class="search-icon">
+        </div>
+
+        <div class="icons">
+            <a href="{% url 'likes' %}"><img src="{% static 'img/избранное.png' %}" alt="Избранное"></a>
+            <a href="{% url 'korzina' %}"><img src="{% static 'img/корзина.png' %}" alt="Корзина"></a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}"><img src="{% static 'img/user.png' %}" alt="Личный кабинет"></a>
+            {% else %}
+                <a href="{% url 'login' %}"><img src="{% static 'img/user.png' %}" alt="Войти"></a>
+            {% endif %}
+            <a href="#"><img src="{% static 'img/уведомления.png' %}" alt="Уведомления"></a>
+        </div>
+    </div>
+
+    <div class="catalog">
+        <a href="#" class="catalog-button">Живопись</a>
+        <a href="#" class="catalog-button">Керамика</a>
+        <a href="#" class="catalog-button">Скульптура</a>
+        <a href="#" class="catalog-button">Художники</a>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <footer style="background: #ddd; padding: 20px;">
+        <div class="footer-conteiner">
+            <div class="footer-block-top">
+                <img src="{% static 'img/лого.png' %}" class="logo" style="margin-right: 500px;">
+                <button style="padding: 8px 12px; background: #ccc; border: none; font-weight: bold; cursor: pointer;">
+                    Разместить работу +
+                </button>
+            </div>
+
+            <div class="footer-block-bottom">
+                <div style="margin-right: 520px;">
+                    <h3 style="margin: 0 0 10px;">О нас</h3>
+                </div>
+
+                <div style="margin-right: 520px;">
+                    <h3 style="margin: 0 0 10px;">Каталог</h3>
+                    <div>Живопись</div>
+                    <div>Керамика</div>
+                    <div>Скульптура</div>
+                    <div>Художники</div>
+                </div>
+
+                <div>
+                    <h3 style="margin: 0 0 10px;">Обратная связь</h3>
+                </div>
+            </div>
+      
+            <div style="background: #bbb; text-align: center; padding: 10px; margin-top: 20px; width: 1380px;">
+                ©Все на этом сайте защищено
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Анимация для кнопок каталога
+            $('.catalog-button').hover(
+                function() { $(this).css('transform', 'scale(1.05)'); },
+                function() { $(this).css('transform', 'scale(1)'); }
+            );
+
+            // Переключение избранного
+            $('.heart').click(function() {
+                const artworkId = $(this).data('id');
+                $.post(`/toggle-favorite/${artworkId}/`, {}, function(data) {
+                    if (data.status === 'added') {
+                        $(this).addClass('liked').html('♥');
+                    } else {
+                        $(this).removeClass('liked').html('♡');
+                    }
+                    $('#favorites-count').text(data.count);
+                });
+            });
+
+            // Добавление в корзину
+            $('.add-to-cart').click(function() {
+                const artworkId = $(this).data('id');
+                $.post(`/add-to-cart/${artworkId}/`, {}, function(data) {
+                    if (data.status === 'success') {
+                        $('#cart-count').text(data.count);
+                        alert('Товар добавлен в корзину!');
+                    }
+                });
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

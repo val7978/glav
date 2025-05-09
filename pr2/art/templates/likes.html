@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style4.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="title-block">
+    <p class="title">Избранное</p>
+</div>    
+
+<div class="favorites-container" id="favoritesContainer">
+    {% for artwork in artworks %}
+    <div class="art-card">
+        <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
+        <div class="card-footer">
+            <span class="title">{{ artwork.title }}</span>
+            <span class="heart liked" data-id="{{ artwork.id }}" onclick="toggleFavorite(this)">&#10084;</span>
+        </div>
+        <div class="extra-buttons">
+            <span class="icon-button add-to-cart" data-id="{{ artwork.id }}">+ Корзина</span>
+        </div>
+    </div>
+    {% empty %}
+    <p style="text-align: center; width: 100%;">В избранном пока ничего нет</p>
+    {% endfor %}
+</div>
+
+<script>
+    function toggleFavorite(element) {
+        const artworkId = element.getAttribute('data-id');
+        fetch(`/toggle-favorite/${artworkId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'removed') {
+                element.closest('.art-card').remove();
+                if (document.querySelectorAll('.art-card').length === 0) {
+                    const container = document.getElementById('favoritesContainer');
+                    container.innerHTML = '<p style="text-align: center; width: 100%;">В избранном пока ничего нет</p>';
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="login-container" style="max-width: 400px; margin: 50px auto; padding: 20px; background: #f5f5f5; border-radius: 10px;">
+    <h2 style="text-align: center;">Вход</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        
+        <div style="margin-bottom: 15px;">
+            <label for="id_username">Имя пользователя:</label>
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="id_password">Пароль:</label>
+            {{ form.password }}
+            {{ form.password.errors }}
+        </div>
+        
+        <button type="submit" style="width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Войти</button>
+    </form>
+    
+    <div style="margin-top: 20px; text-align: center;">
+        <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрируйтесь</a></p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Новый пароль{% endblock %}
+
+{% block content %}
+    <h1>Новый пароль</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="id_new_password1">Новый пароль</label>
+            <input type="password" id="id_new_password1" name="new_password1" placeholder="Введите новый пароль" required>
+        </div>
+
+        <div class="input-group">
+            <label for="id_new_password2">Подтвердите пароль</label>
+            <input type="password" id="id_new_password2" name="new_password2" placeholder="Повторите новый пароль" required>
+        </div>
+
+        <button type="submit" class="login-button">Сохранить пароль</button>
+    </form>
+{% endblock %}

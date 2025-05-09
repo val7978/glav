@@ -1,0 +1,134 @@
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <link rel="stylesheet" href="{% static 'css/general-style.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="logo-block">
+            <img src="{% static 'img/лого.png' %}" class="logo">
+        </div>
+
+        <div class="search-container">
+            <div class="search-params">
+                <span>поиск по параметрам</span>
+            </div>
+            <input type="text" placeholder="поиск" class="search-input">
+        </div>
+
+        <div class="icons">
+            <a href="{% url 'likes' %}"><img src="{% static 'img/избранное.png' %}" alt="Избранное"></a>
+            <a href="{% url 'korzina' %}"><img src="{% static 'img/корзина.png' %}" alt="Корзина"></a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}"><img src="{% static 'img/выход.png' %}" alt="Выйти"></a>
+            {% else %}
+                <a href="{% url 'login' %}"><img src="{% static 'img/вход.png' %}" alt="Войти"></a>
+            {% endif %}
+            <a href="#"><img src="{% static 'img/уведомления.png' %}" alt="Уведомления"></a>
+        </div>
+    </div>
+
+    <div class="catalog">
+        {% for category in categories %}
+        <a href="#" class="catalog-button">{{ category.name }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="main-content">
+        <div class="tops">
+            <div class="image-container">
+                <a href="#"><img src="{% static 'img/современная живопись.jpg' %}" alt="Современная живопись" class="image"></a>
+                <h2 class="image-text">Современная живопись</h2>
+            </div>
+            
+            <div class="image-container">
+                <a href="#"><img src="{% static 'img/идеи для подарка.jpg' %}" alt="Идеи для подарка" class="image"></a>
+                <h2 class="image-text">Идеи для подарка</h2>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Новички месяца ↓</h3>
+            <div class="scroll-container">
+                {% for artwork in new_artworks %}
+                <div class="art-card">
+                    <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
+                    <div class="card-footer">
+                        <span class="title">{{ artwork.title }}</span>
+                        <span class="heart" onclick="toggleFavorite({{ artwork.id }})">&#9825;</span>
+                    </div>
+                    <button class="add-to-cart" data-artwork-id="{{ artwork.id }}">+ Корзина</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <button>Разместить работу +</button>
+            
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h3>О нас</h3>
+                </div>
+                <div class="footer-column">
+                    <h3>Каталог</h3>
+                    {% for category in categories|slice:":4" %}
+                    <a href="#">{{ category.name }}</a>
+                    {% endfor %}
+                </div>
+                <div class="footer-column">
+                    <h3>Обратная связь</h3>
+                </div>
+            </div>
+            
+            <div>©Все на этом сайте защищено</div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFavorite(artworkId) {
+            fetch(`/add-to-favorites/${artworkId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'added') {
+                    alert('Добавлено в избранное!');
+                }
+            });
+        }
+
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const artworkId = this.getAttribute('data-artwork-id');
+                fetch(`/add-to-cart/${artworkId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.status === 'added') {
+                        alert('Добавлено в корзину!');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Сброс пароля{% endblock %}
+
+{% block content %}
+    <h1>Сброс пароля</h1>
+    <small>Для сброса пароля введите адрес электронной почты, на который был зарегистрирован аккаунт</small>
+    <br><br>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="id_email">E-mail</label>
+            <input type="email" id="id_email" name="email" placeholder="Введите E-mail" required>
+        </div>
+
+        <button type="submit" class="login-button">Сбросить пароль</button>
+    </form>
+{% endblock %}

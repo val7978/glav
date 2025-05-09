@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="title-block">
+    <p class="title">Личный кабинет</p>
+</div>
+
+<div style="display: flex; gap: 30px; padding: 20px;">
+    <div style="flex: 1; background: white; padding: 20px; border-radius: 10px;">
+        <h3>Мой профиль</h3>
+        <p><strong>Имя:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <a href="#" class="catalog-button" style="display: inline-block; margin-top: 10px;">Редактировать профиль</a>
+    </div>
+    
+    <div style="flex: 2; background: white; padding: 20px; border-radius: 10px;">
+        <h3>Мои заказы</h3>
+        {% if user.orders.all %}
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            {% for order in user.orders.all|slice:":5" %}
+            <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                <p><strong>Заказ #{{ order.id }}</strong> - {{ order.get_status_display }} ({{ order.created_at|date:"d.m.Y" }})</p>
+                <p>Сумма: {{ order.total_price }} ₽</p>
+                <a href="#" class="catalog-button" style="display: inline-block; margin-top: 5px;">Подробнее</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>У вас пока нет заказов</p>
+        {% endif %}
+    </div>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; background: white; border-radius: 10px;">
+    <h3>Мои избранные товары</h3>
+    {% if user.favorites.all %}
+    <div class="scroll-container">
+        {% for fav in user.favorites.all|slice:":5" %}
+        <div class="art-card">
+            <img src="{{ fav.artwork.image.url }}" alt="{{ fav.artwork.title }}">
+            <div class="card-footer">
+                <span class="title">{{ fav.artwork.title }}</span>
+                <span class="heart liked" data-id="{{ fav.artwork.id }}" onclick="toggleFavorite(this)">&#10084;</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: right; margin-top: 10px;">
+        <a href="{% url 'likes' %}" class="catalog-button">Все избранные</a>
+    </div>
+    {% else %}
+    <p>У вас пока нет избранных товаров</p>
+    {% endif %}
+</div>
+{% endblock %}
